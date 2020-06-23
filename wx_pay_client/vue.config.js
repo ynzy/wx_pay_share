@@ -30,7 +30,7 @@ module.exports = {
   },
   devServer: {
     host: 'm.imooc.com',
-    open: true, // 是否自动弹出浏览器页面
+    open: false, // 是否自动弹出浏览器页面
     // host: 'localhost',
     port: '80',
     https: false, // 是否使用https协议

@@ -3,7 +3,7 @@ import { awaitWrap } from '@/utils/util'
 
 /**
  * 获取微信配置
- * @param {*} href 路由地址
+ * @param {*} href 路由地址 后台根据当前url地址进行签名
  */
 export const wechatConfig = href => {
   return awaitWrap(
@@ -50,6 +50,6 @@ export const payWallet = () => {
  * @returns
  */
 export const wechatRedirect = url => {
-  url = `http%3A%2F%2Fm.51purse.com%2F%23%2Findex`
+  url = window.encodeURIComponent('http://m.imooc.com')
   return `/api/wechat/redirect?url=${url}&scope=snsapi_userinfo`
 }

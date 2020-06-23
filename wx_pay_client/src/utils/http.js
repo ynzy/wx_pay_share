@@ -1,14 +1,14 @@
 import axios from 'axios'
 import { storage, sessionStorage } from '@/utils/storage'
-import { Message } from 'element-ui'
+// import { Message } from 'element-ui'
 //引入nprogress
-import NProgress from 'nprogress'
-import 'nprogress/nprogress.css'
+// import NProgress from 'nprogress'
+// import 'nprogress/nprogress.css'
 
 import router from '../router/index'
 
-NProgress.inc(0.2)
-NProgress.configure({ easing: 'ease', speed: 500, showSpinner: false })
+// NProgress.inc(0.2)
+// NProgress.configure({ easing: 'ease', speed: 500, showSpinner: false })
 
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_URL,
@@ -55,7 +55,7 @@ service.interceptors.response.use(
         //erorrMap[code]
         if (status == 400 && res.data.meta.msg == '无效token') {
           // token失效
-          Message.error(res.data.meta.msg)
+          // Message.error(res.data.meta.msg)
           sessionStorage.remove('token')
           router.replace('/login')
         }
@@ -72,7 +72,7 @@ service.interceptors.response.use(
     } else if (error.response) {
       if (error.response.status === 400) {
         //请求参数有问题
-        Message.error(error)
+        // Message.error(error)
       } else if (error.response.status === 404) {
         //未找到资源
         console.log('未找到资源')
