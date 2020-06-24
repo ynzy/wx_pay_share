@@ -17,7 +17,8 @@ export default {
     checkUserAuth() {
       let openId = this.$cookie.get('openId')
       if (!openId) {
-        // window.location.href = wechatRedirect()
+        console.log(wechatRedirect())
+        window.location.href = wechatRedirect()
         let appid = 'wx9790364d20b47d95'
         let url = window.encodeURIComponent('http://m.imooc.com')
         let scope = 'snsapi_userinfo'
@@ -28,12 +29,14 @@ export default {
     },
     // 获取微信配置信息
     async getWechatConfig() {
-      let [err, res] = await wxchatConfig(location.href.split('#')[0])
+      let [err, res] = await wechatConfig(location.href.split('#')[0])
       if (err) {
         console.log(err)
         // return this.$message.error(err.message || '获取微信配置失败')
       }
       console.log(res)
+      return
+      let data = res.data
       wx.config({
         debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
         appId: data.appId, // 必填，公众号的唯一标识

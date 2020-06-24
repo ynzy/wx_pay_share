@@ -1,0 +1,67 @@
+/**
+ * 微信开发
+ */
+let express = require('express')
+let router = express.Router()
+let cache = require('memory-cache');
+let {wx:config} = require('./config');
+let request = require('request');
+
+router.get('/test', function (req, res) {
+  res.json({
+    code: 0,
+    data: 'test',
+    message: ''
+  })
+})
+
+/**
+ * 用户授权重定向
+ * @query url
+ * @query scope
+ * @return
+ */
+router.get('/redirect', function (req, res, next) {
+  let redirectUrl = req.query.url  // 最终重定向的地址->跳转回前端的页面
+  let scope = req.query.scope // 作用域
+  // console.log(redirectUrl);
+  let callback = 'http://m.imooc.com/api/wechat/getOpenId'; // 授权回调地址，用来获取openId
+  cache.put('redirectUrl', redirectUrl); // 通过cache 缓存重定向地址
+  let authorizeUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${config.appId}&redirect_uri=${callback}&response_type=code&scope=${scope}&state=STATE#wechat_redirect`;
+  res.redirect(authorizeUrl)  //服务端重定向
+});
+
+/**
+ * 根据code获取用户的OpenId
+ * @query code 用户授权之后获取到的code
+ */
+router.get('/getOpenId', async function (req, res) {
+  let code = req.query.code;
+  console.log("code:" + code);
+  if (!code) { 
+    res.json({
+      code: 1001,
+      data: '',
+      message: '当前未获取授权code码'
+    })
+    return
+  }
+  let access_token_url = `https://api.weixin.qq.com/sns/oauth2/access_token?appid=${config.appId}&secret=${config.appSecret}&code=${code}&grant_type=authorization_code`
+  request.get(access_token_url, function (err,response,body) { 
+    if (err || response.statusCode != '200') {
+      // 请求失败
+      return
+    }
+    console.log('body:',body);
+    let data = JSON.parse(body)
+    // console.log(data);
+    // 请求成功，将openid存储到cookie
+    let expire_time = 1000 * 60 * 1 // 过期时间
+    console.log(data.openid);
+    res.cookie('openId', data.openid, { maxAge: expire_time });
+    let redirectUrl = cache.get('redirectUrl') //获取缓存中的重定向地址
+    res.redirect(redirectUrl)
+  })
+})
+
+module.exports = router
