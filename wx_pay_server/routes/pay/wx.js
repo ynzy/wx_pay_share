@@ -53,7 +53,7 @@ router.get('/getOpenId', async function (req, res) {
 		return
 	}
 	let data = result.data
-	let expire_time = 1000 * 60 * 1 // 过期时间
+	let expire_time = 1000 * 60 * 60 * 2 // 过期时间 2个小时
 	// 将taccess_token存储到缓存里
 	cache.put('access_token', data.access_token, expire_time)
 	cache.put('openId', data.openid, expire_time)
