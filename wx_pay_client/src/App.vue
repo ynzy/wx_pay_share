@@ -18,11 +18,15 @@ export default {
       let openId = this.$cookie.get('openId')
       if (!openId) {
         console.log(wechatRedirect())
-        window.location.href = wechatRedirect()
-        let appid = 'wx9790364d20b47d95'
+        // 请求后台接口进行授权回调
+        // window.location.href = wechatRedirect()
+        return
+        // 前台模拟微信授权回调
+        /* let appid = 'wx9790364d20b47d95'
         let url = window.encodeURIComponent('http://m.imooc.com')
+        let url = window.encodeURIComponent('http://c1a8950d2703.ngrok.io')
         let scope = 'snsapi_userinfo'
-        // window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${url}&response_type=code&scope=${scope}&state=STATE#wechat_redirect`
+        window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${url}&response_type=code&scope=${scope}&state=STATE#wechat_redirect` */
       } else {
         this.getWechatConfig()
       }
@@ -53,7 +57,7 @@ export default {
   },
   mounted() {
     this.checkUserAuth()
-    var url = window.encodeURIComponent('http://m.imooc.com')
+    // var url = window.encodeURIComponent('http://m.imooc.com')
   },
   components: {}
 }
