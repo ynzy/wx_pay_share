@@ -54,7 +54,7 @@ router.get('/getOpenId', async function (req, res) {
 	}
 	let data = result.data
 	let expire_time = 1000 * 60 * 60 * 2 // 过期时间 2个小时
-	// 将taccess_token存储到缓存里
+	// 将openId，taccess_token存储到缓存里
 	cache.put('access_token', data.access_token, expire_time)
 	cache.put('openId', data.openid, expire_time)
 	// console.log(data.openid)
@@ -64,6 +64,9 @@ router.get('/getOpenId', async function (req, res) {
 	res.redirect(redirectUrl)
 })
 
+/**
+ * 获取用户信息
+ */
 router.get('/getUserInfo', async function (req, res) {
 	let access_token = cache.get('access_token')
 	let openId = cache.get('openId')

@@ -46,8 +46,7 @@ service.interceptors.response.use(
   res => {
     // NProgress.done()
     //可以根据后端的系统而相应的做调整
-    console.log(res.data)
-
+    // console.log(res.data)
     if (res.data.code == 0) {
       return res.data
     }
