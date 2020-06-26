@@ -29,8 +29,7 @@ module.exports = {
     extract: false
   },
   devServer: {
-    host: '127.0.0.1',
-    // host: 'zhangyong.utools.club',
+    host: 'api.example.com',
     disableHostCheck: true,
     open: false, // 是否自动弹出浏览器页面
     port: '80',

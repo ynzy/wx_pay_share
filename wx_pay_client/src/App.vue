@@ -17,9 +17,9 @@ export default {
     checkUserAuth() {
       let openId = this.$cookie.get('openId')
       if (!openId) {
-        console.log(wechatRedirect())
+        console.log(wechatRedirect(location.origin))
         // 请求后台接口进行授权回调
-        // window.location.href = wechatRedirect()
+        window.location.href = wechatRedirect(location.origin)
         return
         // 前台模拟微信授权回调
         /* let appid = 'wx9790364d20b47d95'
@@ -28,7 +28,7 @@ export default {
         let scope = 'snsapi_userinfo'
         window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${url}&response_type=code&scope=${scope}&state=STATE#wechat_redirect` */
       } else {
-        this.getWechatConfig()
+        // this.getWechatConfig()
       }
     },
     // 获取微信配置信息

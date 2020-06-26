@@ -50,7 +50,6 @@ export const payWallet = () => {
  * @returns
  */
 export const wechatRedirect = url => {
-  // url = window.encodeURIComponent('http://m.imooc.com')
-  url = window.encodeURIComponent('http://api.example.com')
+  url = window.encodeURIComponent(url)
   return `/api/wechat/redirect?url=${url}&scope=snsapi_userinfo`
 }
