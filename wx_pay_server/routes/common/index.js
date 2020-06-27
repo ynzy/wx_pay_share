@@ -8,7 +8,7 @@ let util = require('../../utils/util')
 config = config.wx
 
 /**
- * 获取accessToken
+ * 获取网页授权access_token
  * https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html
  * @param code 授权code码
  */
@@ -45,7 +45,35 @@ exports.getUserInfo = function (access_token, openId) {
 	return new Promise((resolve, reject) => {
 		request.get(userInfo_url, function (err, response, body) {
 			let result = util.handleResponse(err, response, body)
-			// console.log(result)
+			resolve(result)
+		})
+	})
+}
+
+/**
+ * 获取普通access_token
+ * https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Get_access_token.html
+ */
+exports.getToken = function () {
+	let token_url = `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${config.appId}&secret=${config.appSecret}`
+	return new Promise((resolve, reject) => {
+		request.get(token_url, function (err, response, body) {
+			let result = util.handleResponse(err, response, body)
+			resolve(result)
+		})
+	})
+}
+
+/**
+ * 根据普通access_token获取jsapi_ticket
+ * https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html#62
+ * @param token 普通access_token
+ */
+exports.getTicket = function (token) {
+	let jsapi_ticket_url = `https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${token}&type=jsapi`
+	return new Promise((resolve, reject) => {
+		request.get(jsapi_ticket_url, function (err, response, body) {
+			let result = util.handleResponse(err, response, body)
 			resolve(result)
 		})
 	})

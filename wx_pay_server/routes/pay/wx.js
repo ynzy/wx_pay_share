@@ -2,6 +2,7 @@
  * 微信开发
  */
 let express = require('express')
+let createHash = require('create-hash')
 let router = express.Router()
 let cache = require('memory-cache')
 let { wx: config } = require('./config')
@@ -49,7 +50,7 @@ router.get('/getOpenId', async function (req, res) {
 	if (result.code != 0) {
 		console.log(result)
 		// 请求失败
-		res.json(result)
+		res.json('授权失败accessToken：', result)
 		return
 	}
 	let data = result.data
@@ -71,7 +72,54 @@ router.get('/getUserInfo', async function (req, res) {
 	let access_token = cache.get('access_token')
 	let openId = cache.get('openId')
 	let result = await common.getUserInfo(access_token, openId)
+	console.log(result)
+
 	res.json(result)
+})
+
+/**
+ * 获取jssdk配置
+ */
+router.get('/jssdk', async function (req, res) {
+	let url = req.query.url
+	// 获取普通access_token
+	let result = await common.getToken()
+	if (result.code != 0) {
+		console.log(result)
+		return
+	}
+	// 有效期7200秒，开发者必须在自己的服务全局缓存access_token
+	let token = result.data.access_token
+	cache.put('token', token)
+	// 获取ticket临时票据
+	let ticketRes = await common.getTicket(token)
+	if (ticketRes.code != 0) {
+		console.log(ticketRes)
+		return
+	}
+	let ticket = ticketRes.data.ticket
+	// 签名算法需要的值
+	let params = {
+		noncestr: util.createNonceStr(),
+		jsapi_ticket: ticket,
+		timestamp: util.creatTimeStamp(),
+		url
+	}
+	console.log(params)
+
+	// 排序转成字符串
+	let str = util.raw(params)
+	// 进行sha1加密,生成签名 最好加一个hex参数
+	let sign = createHash('sha1').update(str).digest('hex')
+	res.json(
+		util.handleSuccess({
+			appId: config.appId, // 必填，公众号的唯一标识
+			timestamp: params.timestamp, // 必填，生成签名的时间戳
+			nonceStr: params.noncestr, // 必填，生成签名的随机串
+			signature: sign, // 必填，签名
+			jsApiList: ['updateAppMessageShareData', 'updateTimelineShareData', 'onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareQZone', 'chooseWXPay'] // 必填，需要使用的JS接口列表
+		})
+	)
 })
 
 module.exports = router

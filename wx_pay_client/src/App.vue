@@ -28,18 +28,17 @@ export default {
         let scope = 'snsapi_userinfo'
         window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${url}&response_type=code&scope=${scope}&state=STATE#wechat_redirect` */
       } else {
-        // this.getWechatConfig()
+        this.getWechatConfig()
       }
     },
     // 获取微信配置信息
     async getWechatConfig() {
       let [err, res] = await wechatConfig(location.href.split('#')[0])
       if (err) {
-        console.log(err)
+        console.log('configErr:', err)
         // return this.$message.error(err.message || '获取微信配置失败')
       }
-      console.log(res)
-      return
+      // console.log(res)
       let data = res.data
       wx.config({
         debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
@@ -50,7 +49,7 @@ export default {
         jsApiList: data.jsApiList // 必填，需要使用的JS接口列表
       })
       wx.ready(() => {
-        // initShareInfo(wx)
+        initShareInfo(wx)
       })
       // this.$message.success(res.message || '获取成功')
     }

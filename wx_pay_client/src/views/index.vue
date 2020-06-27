@@ -1,7 +1,7 @@
 <template>
   <div class="index">
     <img class="header" src="../assets/image/header.png" />
-    <div class="user_info">
+    <div class="user_info" v-if="userInfo">
       <div class="avator_img">
         <img :src="userInfo.headimgurl" alt="" />
       </div>
@@ -34,10 +34,9 @@ export default {
       let [err, res] = await getUserInfo()
       if (err) {
         console.log(err)
-
         return
       }
-      console.log(res)
+      // console.log(res)
       this.userInfo = res.data
     }
   },
