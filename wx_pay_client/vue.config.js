@@ -29,7 +29,7 @@ module.exports = {
     extract: false
   },
   devServer: {
-    host: 'api.example.com',
+    // host: '74f9dj.natappfree.cc',
     disableHostCheck: true,
     open: false, // 是否自动弹出浏览器页面
     port: '80',

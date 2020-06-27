@@ -44,6 +44,7 @@ export default {
     if (this.$cookie.get('openId')) {
       this.getUser()
     }
+    console.log(this.$wx)
   }
 }
 </script>
