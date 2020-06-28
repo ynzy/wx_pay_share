@@ -1,7 +1,14 @@
 const path = require('path') // 引入path模块
+const process = require('process')
 function resolve(dir) {
   return path.join(__dirname, dir) // path.join(__dirname)设置绝对路径
 }
+let host = null
+if (process.env.VUE_APP_BASE_URL) {
+  host = process.env.VUE_APP_BASE_URL.split('//')[1]
+}
+console.log(host)
+
 module.exports = {
   lintOnSave: false, // 是否开启eslint
   outputDir: process.env.outputDir, // build输出目录
@@ -29,8 +36,8 @@ module.exports = {
     extract: false
   },
   devServer: {
-    // host: '74f9dj.natappfree.cc',
-    disableHostCheck: true,
+    host: host || '',
+    disableHostCheck: true, // 绕过主机检查，解决Invalid Host header问题
     open: false, // 是否自动弹出浏览器页面
     port: '80',
     https: false, // 是否使用https协议
@@ -52,6 +59,15 @@ module.exports = {
         // 将主机标头的原点改为目标URL
         changeOrigin: false
       }
+      /* '/qqMap': {
+        // 设置目标API地址
+        target: 'http://localhost:3000',
+        // 如果要代理 websockets
+        ws: false,
+        secure: true, // 使用的是http协议则设置为false，https协议则设置为true
+        // 将主机标头的原点改为目标URL
+        changeOrigin: false
+      } */
     }
   }
 }

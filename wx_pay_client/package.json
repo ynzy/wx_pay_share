@@ -10,6 +10,8 @@
   "dependencies": {
     "axios": "^0.19.2",
     "core-js": "^3.6.5",
+    "qqmap": "^1.0.1",
+    "vconsole": "^3.3.4",
     "vue": "^2.6.11",
     "vue-cookie": "^1.1.4",
     "vue-router": "^3.2.0",

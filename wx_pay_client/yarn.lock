@@ -6503,6 +6503,11 @@ q@^1.1.2:
   resolved "https://registry.npm.taobao.org/q/download/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
   integrity sha1-fjL3W0E4EpHQRhHxvxQQmsAGUdc=
 
+qqmap@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npm.taobao.org/qqmap/download/qqmap-1.0.1.tgz#46279e8f9cd68002e2e0cc5a5fc155f701f401d3"
+  integrity sha1-Rieej5zWgALi4MxaX8FV9wH0AdM=
+
 qs@6.7.0:
   version "6.7.0"
   resolved "https://registry.npm.taobao.org/qs/download/qs-6.7.0.tgz#41dc1a015e3d581f1621776be31afb2876a9b1bc"
@@ -7978,6 +7983,11 @@ vary@~1.1.2:
   version "1.1.2"
   resolved "https://registry.npm.taobao.org/vary/download/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=
+
+vconsole@^3.3.4:
+  version "3.3.4"
+  resolved "https://registry.npm.taobao.org/vconsole/download/vconsole-3.3.4.tgz#a7dacd8887b3d3e902e8d18425cda56c34e77f51"
+  integrity sha1-p9rNiIez0+kC6NGEJc2lbDTnf1E=
 
 vendors@^1.0.0:
   version "1.0.4"

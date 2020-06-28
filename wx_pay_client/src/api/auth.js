@@ -53,3 +53,18 @@ export const wechatRedirect = url => {
   url = window.encodeURIComponent(url)
   return `/api/wechat/redirect?url=${url}&scope=snsapi_userinfo`
 }
+
+/**
+ * 获取当前地理位置信息
+ * @param {*} href
+ * @returns
+ */
+export const getLocation = ({ ...params }) => {
+  return awaitWrap(
+    request({
+      url: `/api/qqMap/getLocation`,
+      method: 'get',
+      params
+    })
+  )
+}

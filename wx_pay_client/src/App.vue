@@ -1,17 +1,26 @@
 <template>
   <div id="app">
     <router-view />
+    <div id="container" style="width:100%; height:600px"></div>
   </div>
 </template>
 
 <script>
-import { wechatRedirect, wechatConfig } from '@/api/auth'
+import { wechatRedirect, wechatConfig, getLocation } from '@/api/auth'
 import { jsApiList } from '@/utils/jsApiList'
 import wx from 'weixin-js-sdk'
 import { initShareInfo } from '@/utils/wx'
+import maps from 'qqmap'
 export default {
   data() {
-    return {}
+    return {
+      //腾讯地图
+      map: null,
+      getAddress: null,
+      getAddCode: null,
+      addressKeyword: '',
+      shopInfo: {}
+    }
   },
   methods: {
     // 检查用户是否授权过
@@ -60,24 +69,152 @@ export default {
       })
     },
     openLocation() {
+      // this.qqMapGeolocation()
       wx.getLocation({
-        type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-        success: function(res) {
+        type: 'wgs84', // 默认为'wgs84'的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+        success: res => {
           console.log(res)
           var latitude = res.latitude // 纬度，浮点数，范围为90 ~ -90
           var longitude = res.longitude // 经度，浮点数，范围为180 ~ -180。
           var speed = res.speed // 速度，以米/每秒计
           var accuracy = res.accuracy // 位置精度
-          wx.openLocation({
+          console.log(`jssdk经纬度：纬度-${latitude},经度-${longitude}`)
+
+          /* wx.openLocation({
             latitude: latitude, // 纬度，浮点数，范围为90 ~ -90
             longitude: longitude, // 经度，浮点数，范围为180 ~ -180。
             name: '', // 位置名
             address: '', // 地址详情说明
             scale: 1, // 地图缩放级别,整形值,范围从1~28。默认为最大
             infoUrl: '' // 在查看位置界面底部显示的超链接,可点击跳转
-          })
+          }) */
+          // { lng: 115.48525, lat: 38.87317 }
+          // latitude = '38.878486'
+          // longitude = '115.465087'
+          this.getCuttentLoaction(latitude, longitude)
         }
       })
+    },
+    qqMapGeolocation() {
+      let that = this
+      var geolocation = new qq.maps.Geolocation(
+        '3NOBZ-YNLK6-AZHS5-EWI5D-OXS26-OWF4A',
+        '达达-移动端'
+      )
+      geolocation.getIpLocation(showPosition, showErr)
+      // geolocation.getLocation(showPosition, showErr) //或者用getLocation精确度比较高
+      function showPosition(position) {
+        console.log('腾讯地图获取当前位置')
+        console.log(position)
+        // this.latitude = position.lat
+        // this.longitude = position.lng
+        // this.city = position.city
+        // this.setMap()
+        // position.lat = '338.87317'
+        // position.lng = '115.48525'
+        // { lng: 115.48525, lat: 38.87317 }
+        // that.init(position.lat, position.lng)
+        // that.getCuttentLoaction(position.lat, position.lng)
+      }
+      function showErr() {
+        console.log('定位失败')
+        this.qqMapGeolocation() //定位失败再请求定位，测试使用
+      }
+    },
+    //初始化地图
+    init(latitude, longitude) {
+      var that = this
+      maps.init('3NOBZ-YNLK6-AZHS5-EWI5D-OXS26-OWF4A', () => {
+        var myLatlng = new qq.maps.LatLng(latitude, longitude)
+        console.log(myLatlng)
+
+        var myOptions = {
+          zoom: 16,
+          center: myLatlng,
+          mapTypeId: qq.maps.MapTypeId.ROADMAP
+        }
+        that.map = new qq.maps.Map(document.getElementById('container'), myOptions)
+        //获取点击后的地址
+        qq.maps.event.addListener(that.map, 'click', function(event) {
+          // 获取点击后的地图坐标
+          that.shopInfo.lng = event.latLng.getLng()
+          that.shopInfo.lat = event.latLng.getLat()
+          that.getAddressCode()
+        })
+
+        //调用地址显示地图位置并设置地址
+        that.getAddress = new qq.maps.Geocoder({
+          complete: function(result) {
+            that.map.setCenter(result.detail.location)
+            console.log(result)
+
+            console.log(result.detail.location)
+            that.shopInfo.lng = result.detail.location.lng
+            that.shopInfo.lat = result.detail.location.lat
+            var marker = new qq.maps.Marker({
+              map: that.map,
+              position: result.detail.location
+            })
+          }
+        })
+        console.log(that.getAddress)
+
+        //通过坐标来显示地图地址
+        that.getAddCode = new qq.maps.Geocoder({
+          complete: function(result) {
+            that.addressKeyword = result.detail.address
+          }
+        })
+        console.log(that.getAddCodes)
+      })
+    },
+    //通过地址获得位置
+    getAddressKeyword() {
+      //通过getLocation();方法获取位置信息值
+      this.getAddress.getLocation(this.addressKeyword)
+      // 调用自带的接口
+    },
+    // 通过坐标获得地址
+    getAddressCode() {
+      try {
+        var lat = parseFloat(this.shopInfo.lat)
+        var lng = parseFloat(this.shopInfo.lng)
+        var latLng = new qq.maps.LatLng(lat, lng)
+        console.log(latLng)
+
+        //调用获取位置方法
+        this.getAddCode.getAddress(latLng)
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    // 获取 当前位置
+    async getCuttentLoaction(latitude, longitude) {
+      let [err, res] = await getLocation({ latitude, longitude })
+      if (err) {
+        console.log(err)
+        return
+      }
+      // console.log(res)
+      let location = res.data.result.location
+      let address = res.data.result.address
+      console.log(`转换后的经纬度：纬度-${location.lat},经度-${location.lng}`)
+      console.log(address)
+      // this.init(location.lat, location.lng)
+      this.init(38.87317, 115.48525)
+    },
+    // 距离计算
+    getDistance(latitude, longitude) {
+      var e = new qq.maps.LatLng(latitude, longitude) //括号里是 目标打卡点的纬度经度
+      var f = new qq.maps.LatLng(latitude, longitude) //用户当前位置的纬度经度；
+      var distance = parseInt(qq.maps.geometry.spherical.computeDistanceBetween(e, f)) //此时此刻 计算出的 distance，即为两点间的直线距离
+      if (distance <= 50) {
+        alert('打卡成功了')
+      } else if (distance > 50) {
+        alert('距离打卡点超过五十米，打卡失败')
+      } else {
+        alert('出错了')
+      }
     }
   },
   mounted() {
