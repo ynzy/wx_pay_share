@@ -8,7 +8,7 @@ let cache = require('memory-cache')
 let { wx: config } = require('./config')
 let common = require('./../common/index.js')
 let util = require('../../utils/util')
-
+let dao = require('../common/db')
 router.get('/test', function (req, res) {
 	res.json({
 		code: 0,
@@ -54,13 +54,36 @@ router.get('/getOpenId', async function (req, res) {
 		return
 	}
 	let data = result.data
+	let openId = data.openid
 	let expire_time = 1000 * 60 * 60 * 2 // 过期时间 2个小时
 	// 将openId，taccess_token存储到缓存里
 	cache.put('access_token', data.access_token, expire_time)
-	cache.put('openId', data.openid, expire_time)
-	// console.log(data.openid)
+	cache.put('openId', openId, expire_time)
+	// console.log(openId)
 	// 请求成功，将openid存储到cookie
-	res.cookie('openId', data.openid, { maxAge: expire_time })
+	res.cookie('openId', openId, { maxAge: expire_time })
+
+	// 根据openId判断用户是否有注册
+	let userRes = await dao.query({ 'openid': openId }, 'users')
+	console.log(userRes);
+	// 查询失败
+	if (userRes.code !== 0) { 
+		res.json(userRes)
+		return
+	}
+	// 没有此用户
+	if (!userRes.data.length) {
+		console.log('没有此用户');
+		let userData = await common.getUserInfo(data.access_token,openId)
+		let insertData = await dao.insert(userData.data, 'users')
+		if (insertData.code != 0) { 
+			// 操作失败
+			console.log(insertData);
+			return
+		}
+	} 
+	// console.log('有此用户');
+	// 有此用户
 	let redirectUrl = cache.get('redirectUrl') //获取缓存中的重定向地址
 	res.redirect(redirectUrl)
 })

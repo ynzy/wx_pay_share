@@ -60,7 +60,7 @@ export default {
       })
       wx.ready(() => {
         initShareInfo(wx)
-        this.openLocation()
+        // this.openLocation()
       })
       // this.$message.success(res.message || '获取成功')
       wx.error(function(err) {
@@ -78,7 +78,7 @@ export default {
           var longitude = res.longitude // 经度，浮点数，范围为180 ~ -180。
           var speed = res.speed // 速度，以米/每秒计
           var accuracy = res.accuracy // 位置精度
-          console.log(`jssdk经纬度：纬度-${latitude},经度-${longitude}`)
+          console.log(`jssdk经纬度：纬度-${latitude},经度-${longitude},误差范围-${accuracy}`)
 
           /* wx.openLocation({
             latitude: latitude, // 纬度，浮点数，范围为90 ~ -90
@@ -91,8 +91,31 @@ export default {
           // { lng: 115.48525, lat: 38.87317 }
           // latitude = '38.878486'
           // longitude = '115.465087'
-          this.getCuttentLoaction(latitude, longitude)
+          // this.getCuttentLoaction(latitude, longitude)
+          // this.qqMapConvertor(latitude, longitude)
+          // this.init(latitude, longitude)
         }
+      })
+    },
+    qqMapConvertor(lat, lng) {
+      // translate(points:LatLng | Point | Array.<LatLng> | Array.<Point>, type:Number, callback:Function)
+      qq.maps.convertor.translate(new qq.maps.LatLng(lat, lng), 1, function(res) {
+        console.log(res)
+        //取出经纬度并且赋值
+        let latlng = res[0]
+        var map = new qq.maps.Map(document.getElementById('container'), {
+          center: latlng,
+          zoom: 13
+        })
+        //设置marker标记
+        var marker = new qq.maps.Marker({
+          map: map,
+          position: latlng
+        })
+        //这个是点击弹框的基本设置
+        var infoWin = new qq.maps.InfoWindow({
+          map: map
+        })
       })
     },
     qqMapGeolocation() {
@@ -134,7 +157,20 @@ export default {
           mapTypeId: qq.maps.MapTypeId.ROADMAP
         }
         that.map = new qq.maps.Map(document.getElementById('container'), myOptions)
-        //获取点击后的地址
+        console.log(that.map)
+
+        //给定位的位置添加图片标注
+        var marker = new qq.maps.Marker({
+          position: myLatlng,
+          map: that.map
+        })
+        //给定位的位置添加文本标注
+        var marker = new qq.maps.Label({
+          position: myLatlng,
+          map: that.map,
+          content: `误差范围${this.accuracy}`
+        })
+        /* //获取点击后的地址
         qq.maps.event.addListener(that.map, 'click', function(event) {
           // 获取点击后的地图坐标
           that.shopInfo.lng = event.latLng.getLng()
@@ -165,7 +201,7 @@ export default {
             that.addressKeyword = result.detail.address
           }
         })
-        console.log(that.getAddCodes)
+        console.log(that.getAddCodes) */
       })
     },
     //通过地址获得位置
