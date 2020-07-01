@@ -9,8 +9,8 @@
     </div>
     <div class="btn-group">
       <button class="btn">分享</button>
-      <button class="btn btn-primary btn-pay">体验</button>
-      <button class="btn">活动详情</button>
+      <button class="btn btn-primary" @click="recharge">充值</button>
+      <button class="btn" @click="activity">活动详情</button>
     </div>
     <!--<div class="share">
       <img src="./../assets/images/share_guide.png" alt="">
@@ -38,6 +38,12 @@ export default {
       }
       // console.log(res)
       this.userInfo = res.data
+    },
+    recharge() {
+      this.$router.push('/pay')
+    },
+    activity() {
+      this.$router.push('/activity')
     }
   },
   mounted() {
