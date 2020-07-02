@@ -1,15 +1,15 @@
 module.exports = {
-  mockApi:'',
-  Dev:{
-
+  mockApi: '',
+  Dev: {
+    baseApi: 'http://localhost:3000'
   },
-  Test:{
-
+  Test: {
+    baseApi: 'http://test-node.51purse.com'
   },
-  Slave:{
-
+  Slave: {
+    baseApi: 'http://slave-node.51purse.com'
   },
-  Prod:{
-    
+  Prod: {
+    baseApi: 'http://node.51purse.com'
   }
 }

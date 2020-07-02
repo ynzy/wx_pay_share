@@ -9,6 +9,15 @@ Page({
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo')
   },
+  jump() { 
+    console.log(app.router);
+    app.router.push('activity', {
+      query: {
+        id:2
+      },
+      openType: 'redirect'
+    })
+  },
   //事件处理函数
   bindViewTap: function() {
     wx.navigateTo({
