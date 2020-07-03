@@ -11,7 +11,7 @@ Page({
   onLoad: function () {
     // 判断用户是否登录
     if (!this.data.userId) {
-      // this.getSession();
+      this.getSession();
     }
   },
   // 获取登录的code
@@ -22,6 +22,7 @@ Page({
           app.get(Api.getSession, {
             code: res.code
           }).then((res) => {
+            console.log(res);
             store.setItem('openId', res.openid);
           }).catch((res) => {
             console.log('error:' + res.message)
@@ -32,6 +33,7 @@ Page({
   },
   getUserInfo(e) {
     let userInfo = e.detail.userInfo;
+    // 携带openId传给后端
     userInfo.openid = store.getItem('openId');
     app.get(Api.login, {
       userInfo

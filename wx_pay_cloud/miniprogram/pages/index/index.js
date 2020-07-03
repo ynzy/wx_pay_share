@@ -39,7 +39,6 @@ Page({
       }
     }).then(res=>{
       console.log(res);
-      
       let userId = res.result.userId
       store.setItem('userId',userId)
       this.setData({
@@ -47,7 +46,6 @@ Page({
       })
     }).catch(err=>{
       console.log(err);
-      
     })
   },
   recharge() {

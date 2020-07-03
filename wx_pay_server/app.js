@@ -6,6 +6,7 @@ var logger = require('morgan')
 
 var indexRouter = require('./routes/index')
 var wx = require('./routes/pay/wx')
+var mp = require('./routes/pay/mp');
 var qqMap = require('./routes/map/qqMap')
 
 var app = express()
@@ -22,6 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/', indexRouter)
 app.use('/api/wechat', wx)
+app.use('/api/mp', mp);
 app.use('/api/qqMap', qqMap)
 
 // catch 404 and forward to error handler

@@ -1,11 +1,11 @@
 /**
- * 微信开发
+ * H5微信开发
  */
 let express = require('express')
 let createHash = require('create-hash')
 let router = express.Router()
 let cache = require('memory-cache')
-let { wx: config } = require('./config')
+let { wx: config } = require('../../config')
 let common = require('./../common/index.js')
 let util = require('../../utils/util')
 let dao = require('../common/db')
@@ -67,21 +67,21 @@ router.get('/getOpenId', async function (req, res) {
 	let userRes = await dao.query({ 'openid': openId }, 'users')
 	console.log(userRes);
 	// 查询失败
-	if (userRes.code !== 0) { 
+	if (userRes.code !== 0) {
 		res.json(userRes)
 		return
 	}
 	// 没有此用户
 	if (!userRes.data.length) {
 		console.log('没有此用户');
-		let userData = await common.getUserInfo(data.access_token,openId)
+		let userData = await common.getUserInfo(data.access_token, openId)
 		let insertData = await dao.insert(userData.data, 'users')
-		if (insertData.code != 0) { 
+		if (insertData.code != 0) {
 			// 操作失败
 			console.log(insertData);
 			return
 		}
-	} 
+	}
 	// console.log('有此用户');
 	// 有此用户
 	let redirectUrl = cache.get('redirectUrl') //获取缓存中的重定向地址
