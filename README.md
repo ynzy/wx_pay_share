@@ -1,4 +1,37 @@
 # 前端
+
+需要自己在wx_pay_server目录下添加config.js文件，文件内容：
+```js
+/**
+ * 相关配置参数
+ */
+module.exports = {
+	// 商户号
+	mch: {
+		mch_id: '',
+		key: ''
+	},
+	// 微信公众号
+	wx: {
+		configName: '公众号',
+		appId: '',
+		appSecret: ''
+	},
+	// 微信小程序
+	mp: {
+		configName: '小程序',
+		appId: '',
+		appSecret: ''
+	},
+	// 腾讯地图
+	qqMap: {
+		configName: '腾讯地图',
+		key: ''
+	}
+}
+
+```
+
 ## 小程序开发文档
 * https://developers.weixin.qq.com/miniprogram/dev/index.html?t=19040421
 
