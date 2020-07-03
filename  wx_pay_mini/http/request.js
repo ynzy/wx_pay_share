@@ -14,13 +14,14 @@ const clientInfo = {
 }
 const errMsg = '服务异常，请稍后重试'
 module.exports = {
-  fetch: (url, data = {}, { loading = true, toast = true, isMock = false, method = 'get' }) => {
-    let env = isMock ? App.config.mockApi : App.config.baseApi;
+  fetch: (url, data = {}, option = {}) => {
+    let { loading = true, toast = true, isMock = false, method = 'get' } = option
     return new Promise((resolve, reject) => {
       loading && wx.showLoading({
         title: '加载中...',
         mask: true,
       });
+      let env = isMock ? App.config.mockApi : App.config.baseApi;
       wx.request({
         url: env + url,
         data,
@@ -38,13 +39,14 @@ module.exports = {
             loading && wx.hideLoading();
             resolve(res.data)
           } else {
+            // console.log(res);
             // 如果有toast提示会直接结束loading
             toast ? wx.showToast({
-              title: res.message,
+              title: res.message.message[0] || res.message,
               icon: 'none',
               mask: true
             }) : wx.hideLoading();
-            // loading && wx.hideLoading();
+            loading && wx.hideLoading();
             reject(res)
           }
         },
