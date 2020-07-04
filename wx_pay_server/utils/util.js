@@ -13,6 +13,20 @@ module.exports = {
 		return parseInt(new Date().getTime() / 1000) + ''
 	},
 	/**
+	 * 生成系统的交易订单号
+	 * @param type wx：微信  mp：小程序
+	 */
+	getTradeId(type = 'wx') {
+		let date = new Date().getTime().toString()
+		let text = '';
+		let possible = '0123456789'
+		// 生成5位随机数
+		for (let i = 0; i < 5; i++) {
+			text += possible.charAt(Math.floor(Math.random() * possible.length))
+		}
+		return type == ('wx' ? 'Wx' : 'Mp') + date + text
+	},
+	/**
 	 * Object 转换成json 并排序
 	 */
 	raw(args) {

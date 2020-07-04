@@ -7,7 +7,8 @@ let router = express.Router();
 let request = require('request');
 let { mp: config } = require('../../config');
 let util = require('../../utils/util')
-let dao = require('../common/db')
+let dao = require('../common/db');
+const { order } = require('../common/wxpay');
 /**
  * 获取session接口
  * @param {*} code 小程序登陆code
@@ -28,7 +29,10 @@ router.get('/getSession', function (req, res) {
     res.json(result);
   })
 })
-
+/**
+ * 授权登录
+ * @param userInfo 用户信息+openid
+ */
 router.get('/login', async function (req, res) {
   let userInfo = JSON.parse(req.query.userInfo) // 字符串转对象
   // console.log(userInfo);
@@ -66,4 +70,30 @@ router.get('/login', async function (req, res) {
   }))
 })
 
+/**
+ * 支付回调通知
+ */
+router.get('/pay/callback', function (req, res) {
+  res.json(util.handleSuccess())
+})
+
+/**
+ * 小程序支付
+ * @param {*} openId
+ */
+router.get('/pay/payWallet', function (req, res) {
+  let appid = config.appId //小程序id
+  let openid = req.query.openId; // 用户的openid
+  let attach = '支付附加数据' // 附加数据
+  let body = '小程序支付'  // 主体内容
+  let total_fee = req.query.money // 支付金额（分）
+  let ontify_url = 'http://localhost:3000/api/map/pay/callback' // 微信回调接口
+  let ip = '123.57.2.144' // 终端ip
+  let orderRes = order({ appid, attach, body, openid, total_fee, ontify_url, ip }).then(result => {
+    res.json(util.handleSuccess(result))
+  }).catch((result) => {
+    res.json(util.handleFail(result))
+  })
+  // res.json(util.handleSuccess())
+})
 module.exports = router

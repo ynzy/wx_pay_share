@@ -1,6 +1,6 @@
 # 前端
 
-需要自己在wx_pay_server目录下添加config.js文件，文件内容：
+需要自己在wx_pay_server目录下添加config.js文件，文件内容，请自行添加对应应用的相关信息：
 ```js
 /**
  * 相关配置参数
