@@ -1,3 +1,4 @@
+const createHash = require('create-hash')
 module.exports = {
 	/**
 	 * 生成随机字符串
@@ -11,6 +12,15 @@ module.exports = {
 	 */
 	creatTimeStamp() {
 		return parseInt(new Date().getTime() / 1000) + ''
+	},
+	/**
+	 * 生成签名
+	 */
+	getSign(params, key) {
+		let str = this.raw(params) + '&key=' + key
+		// 进行 md5 加密,生成签名 最好加一个hex参数
+		let sign = createHash('md5').update(str).digest('hex')
+		return sign.toUpperCase()
 	},
 	/**
 	 * 生成系统的交易订单号

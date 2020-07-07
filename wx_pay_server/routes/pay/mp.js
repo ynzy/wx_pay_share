@@ -94,6 +94,5 @@ router.get('/pay/payWallet', function (req, res) {
   }).catch((result) => {
     res.json(util.handleFail(result))
   })
-  // res.json(util.handleSuccess())
 })
 module.exports = router

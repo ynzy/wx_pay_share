@@ -10,6 +10,7 @@ const { mch: config } = require('../../config')
 module.exports = {
   /**
    * 微信统一下单
+   * https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_1
    * @param {*} appid 应用id
    * @param {*} attach 附加数据
    * @param {*} body 主题内容
@@ -54,9 +55,11 @@ module.exports = {
             return
           }
           let data = res.xml
-          if (data.return_code == 'success' && data.result_code == 'success') {
+          if (data.return_code[0] == 'SUCCESS' && data.result_code[0] == 'SUCCESS') {
             // 获取预支付的ID
-            let prepay_id = data.prepay_id
+            let prepay_id = data.prepay_id || []
+            let payResult = _that.getPayParams(appid, prepay_id[0])
+            resolve(payResult)
           }
         })
       })
@@ -64,7 +67,7 @@ module.exports = {
   },
   /**
    * 生成预支付签名
-   * 
+   * https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=4_3
    * @param {*} appid 应用id
    * @param {*} attach 附加数据
    * @param {*} body 主题内容
@@ -79,17 +82,19 @@ module.exports = {
    */
   getPrePaySign: function ({ appid, attach, body, mch_id, nonce_str, out_trade_no, openid, total_fee, notify_url, ip }) {
     let params = { appid, attach, body, mch_id, nonce_str, out_trade_no, notify_url, openid, spbill_create_ip: ip, total_fee, trade_type: 'JSAPI' }
+    // 排序拼接字符串
     // stringSignTemp=stringA+"&key=192006250b4c09247ec02edce69f6a2d" //注：key为商户平台设置的密钥key
-    let str = util.raw(params) + '&key=' + config.key
+    return util.getSign(params, config.key)
+    /* let str = util.raw(params) + '&key=' + config.key
     // 进行 md5 加密,生成签名 最好加一个hex参数
     let sign = createHash('md5').update(str).digest('hex')
-    return sign.toUpperCase()
+    return sign.toUpperCase() */
   },
   /**
    * 签名成功之后，根据参数拼接组装XML格式的数据，调用下单接口
    */
   wxSendData: function ({ appid, attach, body, mch_id, nonce_str, out_trade_no, openid, total_fee, notify_url, ip, sign }) {
-    return `<xml>
+    let data = `<xml>
       <appid><![CDATA[${appid}]]></appid>
       <attach><![CDATA[${attach}]]></attach>
       <body><![CDATA[${body}]]></body>
@@ -103,5 +108,24 @@ module.exports = {
       <trade_type><![CDATA[JSAPI]]></trade_type>
       <sign><![CDATA[${sign}]]></sign>
     </xml>`
+    return data
+  },
+  /**
+   * 生成微信支付参数
+   * https://developers.weixin.qq.com/miniprogram/dev/api/open-api/payment/wx.requestPayment.html
+   * @param appId 应用id
+   * @param prepay_id 预支付id
+   */
+  getPayParams: function (appId, prepay_id) {
+    let params = {
+      appId,
+      timeStamp: util.creatTimeStamp(),
+      nonceStr: util.createNonceStr(),
+      package: `prepay_id=${prepay_id}`,
+      signType: 'MD5',
+    }
+    let paySign = util.getSign(params, config.key)
+    params.paySign = paySign
+    return params
   }
 }
