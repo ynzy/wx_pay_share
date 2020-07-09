@@ -30,14 +30,15 @@ export const getUserInfo = () => {
 
 /**
  * 获取微信支付信息
- * @param {*} href
+ * @param {*} money 钱
  * @returns
  */
-export const payWallet = () => {
+export const payWallet = ({ ...params }) => {
   return awaitWrap(
     request({
       url: `/api/wechat/pay/payWallet`,
-      method: 'get'
+      method: 'get',
+      params
     })
   )
 }

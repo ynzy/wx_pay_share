@@ -109,6 +109,7 @@ router.get('/jssdk', async function (req, res) {
 	let result = await common.getToken()
 	if (result.code != 0) {
 		console.log(result)
+		res.json(result)
 		return
 	}
 	// 有效期7200秒，开发者必须在自己的服务全局缓存access_token
