@@ -80,3 +80,4 @@ module.exports = {
 
 ## 小程序前端支付开发文档
 * https://developers.weixin.qq.com/miniprogram/dev/api/wx.requestPayment.html
+

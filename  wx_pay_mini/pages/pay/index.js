@@ -27,7 +27,6 @@ Page({
       money: this.data.index
     }).then((res) => {
       console.log(res);
-      return
       // 支付
       wx.requestPayment({
         timeStamp: res.timeStamp,
