@@ -57,13 +57,9 @@ router.get('/getOpenId', async function (req, res) {
 		return
 	}
 	let data = result.data
-<<<<<<< HEAD
-	// let expire_time = 1000 * 60 * 60 * 2 // 过期时间 2个小时
-	let expire_time = 1000 * 60
-=======
 	let openId = data.openid
-	let expire_time = 1000 * 60 * 60 * 2 // 过期时间 2个小时
->>>>>>> 5d4dc7481b9a97e51d25a12a1a6a4dd1472316ce
+	// let expire_time = 1000 * 60 * 60 * 2 // 过期时间 2个小时
+	let expire_time = 1000 * 60 // 过期时间 2个小时
 	// 将openId，taccess_token存储到缓存里
 	cache.put('access_token', data.access_token, expire_time)
 	cache.put('openId', openId, expire_time)
@@ -72,8 +68,8 @@ router.get('/getOpenId', async function (req, res) {
 	res.cookie('openId', openId, { maxAge: expire_time })
 
 	// 根据openId判断用户是否有注册
-	let userRes = await dao.query({ 'openid': openId }, 'users')
-	console.log(userRes);
+	let userRes = await dao.query({ openid: openId }, 'users')
+	console.log(userRes)
 	// 查询失败
 	if (userRes.code !== 0) {
 		res.json(userRes)
@@ -81,12 +77,12 @@ router.get('/getOpenId', async function (req, res) {
 	}
 	// 没有此用户
 	if (!userRes.data.length) {
-		console.log('没有此用户');
+		console.log('没有此用户')
 		let userData = await common.getUserInfo(data.access_token, openId)
 		let insertData = await dao.insert(userData.data, 'users')
 		if (insertData.code != 0) {
 			// 操作失败
-			console.log(insertData);
+			console.log(insertData)
 			return
 		}
 	}
