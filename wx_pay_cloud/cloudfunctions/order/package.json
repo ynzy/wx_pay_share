@@ -1,0 +1,17 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "xml2js": "^0.4.23",
+    "create-hash": "^1.2.0",
+    "request": "^2.88.2",
+    "wx-server-sdk": "~2.1.2"
+  }
+}

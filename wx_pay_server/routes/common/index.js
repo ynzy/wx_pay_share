@@ -1,9 +1,9 @@
 /**
  * @author
- * @description 微信接口统一封装处理
+ * @description H5微信接口统一封装处理
  */
 let request = require('request')
-let config = require('./../pay/config')
+let config = require('../../config')
 let util = require('../../utils/util')
 config = config.wx
 

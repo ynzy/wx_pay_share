@@ -1,0 +1,17 @@
+<!--pages/activity/index.wxml-->
+<view class="activity">
+    <image src='/assets/images/header.png'/>
+    <view class="content">
+      <view class="item-info">
+        <view class='item-title'>活动说明</view>
+        <view class='item-ul'>
+          <view class="item-li">1、欢迎来到慕课支付专项课程</view>
+          <view class="item-li">2、本课程专门针对大家对微信SDK使用的痛点进行讲解</view>
+          <view class="item-li">3、从公众号创建，微信支付申请到代码编写手把手教大家使用相关API功能</view>
+          <view class="item-li">4、课程最大的难点在于开发流程的理解和签名算法的生成</view>
+          <view class="item-li">5、此课程通过几个页面将支付和分享相关业务串联起来让大家彻底熟悉微信支付功能</view>
+        </view>
+      </view>
+      <view class='tip'>在法律允许范围内，本课程最终版权归慕课所有</view>
+    </view>
+  </view>

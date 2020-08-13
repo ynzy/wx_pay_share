@@ -9,6 +9,6 @@ export const initShareInfo = function(wx) {
   // wx.onMenuShareTimeline(shareInfo)
   // wx.onMenuShareQQ(shareInfo)
   // wx.onMenuShareQZone(shareInfo)
-  // wx.updateAppMessageShareData(shareInfo)
-  // wx.updateTimelineShareData(shareInfo)
+  wx.updateAppMessageShareData(shareInfo)
+  wx.updateTimelineShareData(shareInfo)
 }

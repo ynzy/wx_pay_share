@@ -1,0 +1,45 @@
+/* pages/activity/index.wxss */
+.activity{
+  background-color:#FFC93A;
+}
+image{
+  width:100%;
+  height:624rpx;
+}
+.content{
+  padding:0 40rpx 72rpx;
+}
+.item-info{
+  padding:73rpx 39rpx 164rpx;
+  background-color:#FFFFFF;
+  box-shadow:0rpx 8rpx 48rpx 6rpx rgba(252,195,56,0.44);
+  border-radius:10rpx;
+}
+.item-info .item-title{
+  /* 此处无法设置背景图片，因为wxss不支持本地图片，只能使用云图片或者使用image标签 */
+  /* 
+    background: url('./../assets/images/tip.png') no-repeat;
+    background-size:50%;
+    background-position: center; 
+  */
+  text-align:center;
+  font-size:30rpx;
+  color:#3F1E00;
+  margin-bottom:56rpx;
+}
+.item-info .item-ul{
+  font-size:30rpx;
+  color: #9e9999;
+}
+.item-info .item-ul .item-li{
+  font-size:28rpx;
+  font-weight:normal;
+  color:#333333;
+  line-height:48rpx;
+}
+.content .tip{
+  margin-top:88rpx;
+  text-align:center;
+  font-size:24rpx;
+  color:#6D5312;
+}
