@@ -68,3 +68,26 @@ export const getLocation = ({ ...params }) => {
     })
   )
 }
+/**
+ * 重定向获取url
+ * @param {*} url
+ * @returns
+ */
+export const redirectUrl = url => {
+  return request({
+    url: `/api/wechat/redirect?url=${url}&scope=snsapi_userinfo`,
+    method: 'get'
+  })
+}
+/**
+ * 重定向获取url
+ * @param {*} code
+ * @returns
+ */
+export const getOpenId = ({ ...params }) => {
+  return request({
+    url: `/api/wechat/getOpenId`,
+    method: 'get',
+    params
+  })
+}

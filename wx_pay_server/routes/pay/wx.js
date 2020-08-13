@@ -5,7 +5,7 @@ let express = require('express')
 let createHash = require('create-hash')
 let router = express.Router()
 let cache = require('memory-cache')
-let { wx: config } = require('./config')
+let { wx: config } = require('../../config.js')
 let common = require('./../common/index.js')
 let util = require('../../utils/util')
 
@@ -24,13 +24,16 @@ router.get('/test', function (req, res) {
  * @return
  */
 router.get('/redirect', function (req, res, next) {
+	// console.log(req)
 	let redirectUrl = req.query.url // 最终重定向的地址->跳转回前端的页面
 	let scope = req.query.scope // 作用域
-	// console.log(redirectUrl)
-	let callback = `${redirectUrl}/api/wechat/getOpenId` // 授权回调地址，用来获取openId
+	// console.log('重定向地址', redirectUrl)
+	// let callback = `${redirectUrl}/api/wechat/getOpenId` // 授权回调地址，用来获取openId
+	let callback = `${redirectUrl}` // 授权回调地址，用来获取openId
+	// let callback = `http%3A%2F%2Fapi.example.com/api/wechat/getOpenId` // 授权回调地址，用来获取openId
 	cache.put('redirectUrl', redirectUrl) // 通过cache 缓存重定向地址
 	let authorizeUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${config.appId}&redirect_uri=${callback}&response_type=code&scope=${scope}&state=STATE#wechat_redirect`
-	// console.log(authorizeUrl)
+	console.log(authorizeUrl)
 	res.redirect(authorizeUrl) //服务端重定向
 })
 
@@ -40,8 +43,8 @@ router.get('/redirect', function (req, res, next) {
  */
 router.get('/getOpenId', async function (req, res) {
 	let code = req.query.code
-	// console.log('请求code成功')
-	// console.log('code:' + code)
+	console.log('请求code成功')
+	console.log('code:' + code)
 	if (!code) {
 		res.json(util.handleFail('当前未获取到授权的code码'))
 		return
@@ -54,7 +57,8 @@ router.get('/getOpenId', async function (req, res) {
 		return
 	}
 	let data = result.data
-	let expire_time = 1000 * 60 * 60 * 2 // 过期时间 2个小时
+	// let expire_time = 1000 * 60 * 60 * 2 // 过期时间 2个小时
+	let expire_time = 1000 * 60
 	// 将openId，taccess_token存储到缓存里
 	cache.put('access_token', data.access_token, expire_time)
 	cache.put('openId', data.openid, expire_time)
@@ -62,7 +66,14 @@ router.get('/getOpenId', async function (req, res) {
 	// 请求成功，将openid存储到cookie
 	res.cookie('openId', data.openid, { maxAge: expire_time })
 	let redirectUrl = cache.get('redirectUrl') //获取缓存中的重定向地址
-	res.redirect(redirectUrl)
+	console.log('重定向地址', redirectUrl)
+
+	// res.redirect(`${redirectUrl}?openid=${data.openid}`)
+	res.json({
+		code: 0,
+		data: { openId: data.openid },
+		message: ''
+	})
 })
 
 /**

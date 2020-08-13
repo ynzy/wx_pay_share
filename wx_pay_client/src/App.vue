@@ -6,7 +6,8 @@
 </template>
 
 <script>
-import { wechatRedirect, wechatConfig, getLocation } from '@/api/auth'
+import axios from 'axios'
+import { wechatRedirect, wechatConfig, getLocation, redirectUrl } from '@/api/auth'
 import { jsApiList } from '@/utils/jsApiList'
 import wx from 'weixin-js-sdk'
 import { initShareInfo } from '@/utils/wx'
@@ -25,21 +26,25 @@ export default {
   methods: {
     // 检查用户是否授权过
     checkUserAuth() {
-      let openId = this.$cookie.get('openId')
-      if (!openId) {
-        console.log(wechatRedirect(location.origin))
-        // 请求后台接口进行授权回调
-        window.location.href = wechatRedirect(location.origin)
-        return
-        // 前台模拟微信授权回调
-        /* let appid = 'wx9790364d20b47d95'
+      // let openId = this.$cookie.get('openId')
+      // if (!openId) {
+      // console.log(wechatRedirect(location.origin))
+      // 请求后台接口进行授权回调
+      // window.location.href = wechatRedirect(location.origin)
+      // axios.get(`http://api.example.com/api/wechat/redirect?url=${wechatRedirect(location.origin)}`)
+      /* redirectUrl(window.encodeURIComponent(location.origin)).then(res => {
+        console.log(res)
+      }) */
+      return
+      // 前台模拟微信授权回调
+      /* let appid = 'wx9790364d20b47d95'
         let url = window.encodeURIComponent('http://m.imooc.com')
         let url = window.encodeURIComponent('http://c1a8950d2703.ngrok.io')
         let scope = 'snsapi_userinfo'
         window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${url}&response_type=code&scope=${scope}&state=STATE#wechat_redirect` */
-      } else {
-        this.getWechatConfig()
-      }
+      // } else {
+      // this.getWechatConfig()
+      // }
     },
     // 获取微信配置信息
     async getWechatConfig() {
@@ -69,7 +74,7 @@ export default {
       })
     },
     openLocation() {
-      // this.qqMapGeolocation()
+      this.qqMapGeolocation()
       wx.getLocation({
         type: 'wgs84', // 默认为'wgs84'的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
         success: res => {
@@ -91,7 +96,7 @@ export default {
           // { lng: 115.48525, lat: 38.87317 }
           // latitude = '38.878486'
           // longitude = '115.465087'
-          this.getCuttentLoaction(latitude, longitude)
+          // this.getCuttentLoaction(latitude, longitude)
         }
       })
     },
@@ -101,8 +106,8 @@ export default {
         '3NOBZ-YNLK6-AZHS5-EWI5D-OXS26-OWF4A',
         '达达-移动端'
       )
-      geolocation.getIpLocation(showPosition, showErr)
-      // geolocation.getLocation(showPosition, showErr) //或者用getLocation精确度比较高
+      // geolocation.getIpLocation(showPosition, showErr)
+      geolocation.getLocation(showPosition, showErr) //或者用getLocation精确度比较高
       function showPosition(position) {
         console.log('腾讯地图获取当前位置')
         console.log(position)
@@ -215,9 +220,36 @@ export default {
       } else {
         alert('出错了')
       }
+    },
+    // 截取code
+    GetUrlParame(parameName) {
+      /// 获取地址栏指定参数的值
+      /// <param name="parameName">参数名</param>
+      // 获取url中跟在问号后面的部分
+      var parames = window.location.search
+      // 检测参数是否存在
+      if (parames.indexOf(parameName) > -1) {
+        var parameValue = ''
+        parameValue = parames.substring(parames.indexOf(parameName), parames.length)
+        // 检测后面是否还有参数
+        if (parameValue.indexOf('&') > -1) {
+          // 去除后面多余的参数, 得到最终 parameName=parameValue 形式的值
+          parameValue = parameValue.substring(0, parameValue.indexOf('&'))
+          // 去掉参数名, 得到最终纯值字符串
+          parameValue = parameValue.replace(parameName + '=', '')
+          return parameValue
+        }
+        return ''
+      }
     }
   },
+
   mounted() {
+    const openid = this.GetUrlParame('openid') // 截取code
+    if (openid) {
+      localStorage.setItem('openid', openid) //当前页url与参数放入缓存
+      return
+    }
     this.checkUserAuth()
     // var url = window.encodeURIComponent('http://m.imooc.com')
   },
