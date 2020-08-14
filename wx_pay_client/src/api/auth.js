@@ -51,7 +51,7 @@ export const payWallet = () => {
  */
 export const wechatRedirect = url => {
   url = window.encodeURIComponent(url)
-  return `/api/wechat/redirect?url=${url}&scope=snsapi_userinfo`
+  return `http://momoapp.natapp1.cc/api/wechat/redirect?url=${url}&scope=snsapi_userinfo`
 }
 
 /**

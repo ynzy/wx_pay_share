@@ -26,8 +26,8 @@ router.get('/test', function (req, res) {
 router.get('/redirect', function (req, res, next) {
 	let redirectUrl = req.query.url // 最终重定向的地址->跳转回前端的页面
 	let scope = req.query.scope // 作用域
-	// console.log(redirectUrl)
-	let callback = `${redirectUrl}/api/wechat/getOpenId` // 授权回调地址，用来获取openId
+	console.log(redirectUrl)
+	let callback = `http://momoapp.natapp1.cc/api/wechat/getOpenId` // 授权回调地址，用来获取openId
 	cache.put('redirectUrl', redirectUrl) // 通过cache 缓存重定向地址
 	let authorizeUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${config.appId}&redirect_uri=${callback}&response_type=code&scope=${scope}&state=STATE#wechat_redirect`
 	// console.log(authorizeUrl)
@@ -54,7 +54,8 @@ router.get('/getOpenId', async function (req, res) {
 		return
 	}
 	let data = result.data
-	let expire_time = 1000 * 60 * 60 * 2 // 过期时间 2个小时
+	// let expire_time = 1000 * 60 * 60 * 2 // 过期时间 2个小时
+	let expire_time = 1000 * 60  // 过期时间 2个小时
 	// 将openId，taccess_token存储到缓存里
 	cache.put('access_token', data.access_token, expire_time)
 	cache.put('openId', data.openid, expire_time)
@@ -62,7 +63,8 @@ router.get('/getOpenId', async function (req, res) {
 	// 请求成功，将openid存储到cookie
 	res.cookie('openId', data.openid, { maxAge: expire_time })
 	let redirectUrl = cache.get('redirectUrl') //获取缓存中的重定向地址
-	res.redirect(redirectUrl)
+	console.log(redirectUrl);
+	res.redirect(redirectUrl + '?openid=' + data.openid)
 })
 
 /**

@@ -23,9 +23,19 @@ export default {
     }
   },
   methods: {
+    /**
+     * 获取浏览器地址栏参数值
+     * @param {*} name 参数名
+     * @returns
+     */
+    getUrlParam(name) {
+      let reg = new RegExp('(^|&)' + name + '=([^&]*)')
+      let r = window.location.search.substr(1).match(reg)
+      if (r != null) return decodeURIComponent(r[2])
+    },
     // 检查用户是否授权过
     checkUserAuth() {
-      let openId = this.$cookie.get('openId')
+      let openId = this.getUrlParam('openid')
       if (!openId) {
         console.log(wechatRedirect(location.origin))
         // 请求后台接口进行授权回调
